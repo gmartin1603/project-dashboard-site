@@ -1,88 +1,36 @@
-# Software Landing Template
+# Project Dashboard Site
 
-Reusable Next.js template for project release websites that:
+Marketing and release website for [Project Dashboard](https://github.com/gmartin1603/project-dashboard).
 
-- explains the project
-- highlights that the software is open source
-- links to the public GitHub repository
-- offers a paid Stripe checkout on the website
-- still points people to the free public GitHub release
+This site is built from the `software-landing` template and keeps the same open-source-first model:
 
-## What is included
+- visitors can support the project with a paid Stripe checkout
+- visitors can still download the public release for free from GitHub
+- the public repository is linked directly from the landing page
 
-- Next.js App Router site
-- config-driven landing page content in `lib/site-config.ts`
-- Stripe Checkout session route in `app/api/checkout/route.ts`
-- success and cancel pages
-- Stripe webhook fulfillment route in `app/api/stripe/webhook/route.ts`
-- optional download email delivery through Resend
-
-## Template behavior
-
-This template is intentionally built around an open-source-first model:
-
-- users can pay on the website for a smoother support-and-download flow
-- users can also get the same release for free from GitHub
-- the success page sends paid users to the public GitHub release URL
-
-## Setup
-
-1. Install dependencies:
+## Local development
 
 ```bash
 npm install
-```
-
-2. Copy the example env file:
-
-```bash
 cp .env.example .env.local
-```
-
-3. Add your Stripe keys to `.env.local`.
-
-4. Update `lib/site-config.ts` with:
-
-- project name
-- tagline and description
-- public repo URL
-- GitHub release URL
-- license
-- optional content sections
-
-5. Start the site:
-
-```bash
 npm run dev
 ```
 
-## Pricing
+## Environment variables
 
-The default paid download price is `$3 USD`.
+- `NEXT_PUBLIC_SITE_URL`
+- `NEXT_PUBLIC_DOWNLOAD_PRICE_USD`
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- Optional:
+  - `RESEND_API_KEY`
+  - `DOWNLOAD_EMAIL_FROM`
 
-Change it with:
+Without the Stripe keys, the site still runs and the free GitHub download path remains available.
 
-```env
-NEXT_PUBLIC_DOWNLOAD_PRICE_USD=3
-```
+## Key files
 
-## Stripe notes
-
-- `STRIPE_SECRET_KEY` is required for website checkout.
-- `STRIPE_WEBHOOK_SECRET` is required for webhook verification.
-- `RESEND_API_KEY` and `DOWNLOAD_EMAIL_FROM` are optional, but together they enable a follow-up email that sends the public download link after successful payment.
-- Without the optional email provider, users still get the immediate success-page download link.
-
-## Files to customize first
-
-- `lib/site-config.ts`
-- `.env.local`
-- `app/page.tsx` if you want to reshape the layout or sections
-
-## Routes
-
-- `/` landing page
-- `/success` post-checkout success page
-- `/cancel` post-checkout cancel page
-- `/api/checkout` Stripe Checkout session creator
-- `/api/stripe/webhook` Stripe webhook endpoint
+- `lib/site-config.ts` project-specific content and release links
+- `app/page.tsx` landing page layout
+- `app/api/checkout/route.ts` Stripe checkout session creation
+- `app/api/stripe/webhook/route.ts` optional post-purchase email fulfillment

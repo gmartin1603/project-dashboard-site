@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { DownloadButton } from "@/components/download-button";
 import { formatUsd, siteConfig } from "@/lib/site-config";
 import { isStripeConfigured } from "@/lib/stripe";
@@ -48,10 +49,10 @@ export default function Home() {
           <div className="flex flex-col gap-8">
             <div className="space-y-6">
               <p className="max-w-3xl text-sm uppercase tracking-[0.32em] text-amber-200/70">
-                Ship the release. Explain the value. Let users choose how to support it.
+                Open local projects faster. Support the tool if it earns a place in your daily flow.
               </p>
               <h2 className="font-display max-w-4xl text-5xl leading-none tracking-tight text-[var(--color-paper)] sm:text-6xl lg:text-7xl">
-                A storefront for software that stays honest about being open source.
+                A desktop launcher for people with too many repos and not enough patience.
               </h2>
               <p className="max-w-2xl text-lg leading-8 text-[var(--color-muted)]">
                 {siteConfig.description}
@@ -62,7 +63,7 @@ export default function Home() {
               <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
                 <div className="space-y-4">
                   <p className="text-xs uppercase tracking-[0.3em] text-amber-200/70">
-                    Why this template works
+                    Why Project Dashboard works
                   </p>
                   <p className="font-display text-3xl leading-tight text-[var(--color-paper)] sm:text-4xl">
                     {siteConfig.heroNote}
@@ -113,7 +114,7 @@ export default function Home() {
                 {formatUsd(siteConfig.priceUsd)}
               </p>
               <p className="mt-3 text-base leading-7 text-[var(--color-muted)]">
-                Charge for the smoothest checkout flow, keep the source public, and send supporters straight to the latest release.
+                Support the project from the website, then jump straight to the newest public release on GitHub.
               </p>
             </div>
 
@@ -142,16 +143,84 @@ export default function Home() {
           </aside>
         </section>
 
+        <section className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+          <div className="panel rounded-[2rem] p-8 sm:p-10">
+            <p className="text-xs uppercase tracking-[0.32em] text-amber-200/70">
+              Latest release
+            </p>
+            <div className="mt-4 flex flex-col gap-4 border-b border-white/10 pb-8">
+              <h2 className="font-display text-3xl text-[var(--color-paper)] sm:text-4xl">
+                {siteConfig.projectName} {siteConfig.latestVersion}
+              </h2>
+              <p className="max-w-2xl text-base leading-8 text-[var(--color-muted)]">
+                Current packaged downloads are published as Linux release assets. If you want to support the app first, use the checkout. If you just want the files, GitHub Releases stays public.
+              </p>
+              <a
+                href={siteConfig.latestReleaseUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex w-fit items-center justify-center rounded-full border border-white/12 px-5 py-3 text-sm font-semibold uppercase tracking-[0.22em] text-[var(--color-paper)] transition hover:-translate-y-0.5 hover:border-amber-200/40 hover:bg-white/5"
+              >
+                View release notes
+              </a>
+            </div>
+
+            <div className="mt-8 grid gap-4">
+              {siteConfig.releaseAssets.map((asset) => (
+                <a
+                  key={asset.fileName}
+                  href={asset.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-[1.5rem] border border-white/8 bg-black/15 p-5 transition hover:border-amber-200/30 hover:bg-black/25"
+                >
+                  <p className="text-xs uppercase tracking-[0.26em] text-amber-200/60">
+                    {asset.name}
+                  </p>
+                  <p className="mt-3 break-all text-sm leading-7 text-[var(--color-paper)]">
+                    {asset.fileName}
+                  </p>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid gap-6">
+            {siteConfig.screenshots.map((screenshot) => (
+              <article key={screenshot.title} className="panel overflow-hidden rounded-[2rem]">
+                <Image
+                  src={screenshot.imageUrl}
+                  alt={screenshot.title}
+                  width={1600}
+                  height={1000}
+                  className="block aspect-[16/10] w-full object-cover object-top"
+                />
+                <div className="p-6 sm:p-8">
+                  <p className="text-xs uppercase tracking-[0.3em] text-amber-200/70">
+                    Screenshot
+                  </p>
+                  <h3 className="mt-3 font-display text-2xl text-[var(--color-paper)]">
+                    {screenshot.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-7 text-[var(--color-muted)]">
+                    {screenshot.description}
+                  </p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
         <section className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
           <div className="panel rounded-[2rem] p-8 sm:p-10">
             <p className="text-xs uppercase tracking-[0.32em] text-amber-200/70">
               Open source first
             </p>
             <h2 className="mt-4 font-display text-3xl text-[var(--color-paper)] sm:text-4xl">
-              Make the public repository part of the sales story.
+              The source stays public, the downloads stay public, and the support path stays optional.
             </h2>
             <p className="mt-4 max-w-xl text-base leading-8 text-[var(--color-muted)]">
-              Explain how the project is built, link to issues and release notes, and show the license right next to the commercial support path. Transparency is the point.
+              Project Dashboard is MIT licensed, published in the open, and built for developers who want less friction getting back into active workspaces. The website simply gives supporters a cleaner path to contribute.
             </p>
             <dl className="mt-8 grid gap-4 text-sm text-[var(--color-muted)]">
               <div className="rounded-[1.4rem] border border-white/8 bg-black/15 p-5">

@@ -1,60 +1,96 @@
 const defaultPriceUsd = Number(process.env.NEXT_PUBLIC_DOWNLOAD_PRICE_USD ?? "3");
 
 export const siteConfig = {
-  projectName: "Project Name",
-  tagline: "A release website template for open-source apps that still gives people an easy way to pay.",
+  projectName: "Project Dashboard",
+  latestVersion: "v0.4.7",
+  tagline:
+    "A local-first desktop launcher for development folders, VS Code workspaces, and quick git context.",
   description:
-    "Launch pages for software releases should explain the product, show credibility, point to the public repository, and make downloading simple whether someone pays on your site or grabs it free from GitHub.",
-  repoUrl: "https://github.com/your-org/your-project",
-  releasesUrl: "https://github.com/your-org/your-project/releases/latest",
+    "Project Dashboard scans a configurable code root, finds development projects and workspace files, and gives you one place to reopen folders, inspect local git history, and keep your launcher close from the system tray.",
+  repoUrl: "https://github.com/gmartin1603/project-dashboard",
+  releasesUrl: "https://github.com/gmartin1603/project-dashboard/releases/latest",
+  latestReleaseUrl:
+    "https://github.com/gmartin1603/project-dashboard/releases/tag/v0.4.7",
   licenseName: "MIT",
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   currency: "usd",
   priceUsd:
     Number.isFinite(defaultPriceUsd) && defaultPriceUsd > 0 ? defaultPriceUsd : 3,
   heroNote:
-    "Charge for convenience on your own website while keeping the public source and GitHub releases available for free.",
+    "Pay on the website to support development, or grab the exact same open-source build from GitHub Releases for free.",
   supportNote:
-    "Visitors can pay on your site to support the project or go straight to GitHub for the same public release.",
+    "Project Dashboard is MIT licensed and fully public. The paid path is for convenience and support, not for hiding the software.",
   checkoutDescription:
-    "Support the project directly and get sent right back to the latest public release download.",
+    "Support Project Dashboard directly and get sent right back to the latest public release download.",
   features: [
     {
-      title: "Release-focused messaging",
+      title: "Local project launcher",
       description:
-        "Give every shipped version a proper home with feature highlights, trust signals, and a clear install story.",
+        "Scan a local code root, detect project folders and VS Code workspace files, and jump back into work quickly.",
     },
     {
-      title: "Paid download without lock-in",
+      title: "Git context without leaving the app",
       description:
-        "Accept support payments through Stripe while still linking to the public GitHub release for open-source transparency.",
+        "Browse local branches, inspect recent commits, and review commit details before opening the repo elsewhere.",
     },
     {
-      title: "Template-driven content",
+      title: "Tray-friendly desktop workflow",
       description:
-        "Update one config file to reuse the same site structure for your next project, release, or product line.",
+        "Keep the launcher available from the system tray, refresh quickly, and reopen projects without rebuilding your mental state.",
     },
   ],
   facts: [
-    { label: "Default price", value: "$3 USD" },
+    { label: "Current release", value: "v0.4.7" },
+    { label: "Support price", value: "$3 USD" },
     { label: "License", value: "MIT" },
-    { label: "Distribution", value: "Website checkout and GitHub Releases" },
+    { label: "Distribution", value: "Website checkout, .deb, .rpm, and AppImage" },
+  ],
+  releaseAssets: [
+    {
+      name: "Debian package",
+      fileName: "Project.Dashboard_0.4.7_amd64.deb",
+      url: "https://github.com/gmartin1603/project-dashboard/releases/download/v0.4.7/Project.Dashboard_0.4.7_amd64.deb",
+    },
+    {
+      name: "RPM package",
+      fileName: "Project.Dashboard-0.4.7-1.x86_64.rpm",
+      url: "https://github.com/gmartin1603/project-dashboard/releases/download/v0.4.7/Project.Dashboard-0.4.7-1.x86_64.rpm",
+    },
+    {
+      name: "AppImage",
+      fileName: "Project.Dashboard_0.4.7_amd64.AppImage",
+      url: "https://github.com/gmartin1603/project-dashboard/releases/download/v0.4.7/Project.Dashboard_0.4.7_amd64.AppImage",
+    },
+  ],
+  screenshots: [
+    {
+      title: "Project grid",
+      description:
+        "See your local folders, workspace files, timestamps, and stack hints in one launcher view.",
+      imageUrl: "/screenshots/dashboard.png",
+    },
+    {
+      title: "Settings",
+      description:
+        "Change the scanned root, appearance, and launcher behavior without leaving the app.",
+      imageUrl: "/screenshots/settings.png",
+    },
   ],
   faq: [
     {
-      question: "Why would someone pay if the release is free on GitHub?",
+      question: "Why pay if the release is public on GitHub?",
       answer:
-        "Because some users want the simplest checkout-and-download flow and want to support ongoing open-source maintenance directly.",
+        "Because some users want a direct support path for the project and prefer downloading from the website while still knowing the code and releases remain public.",
+    },
+    {
+      question: "What platforms are currently packaged?",
+      answer:
+        "The latest release currently ships Linux artifacts as .deb, .rpm, and AppImage packages through GitHub Releases.",
     },
     {
       question: "What happens after payment?",
       answer:
-        "Stripe Checkout completes on your domain, the user lands on a success page, and the site sends them to the public release download. Stripe also captures their email for receipts.",
-    },
-    {
-      question: "Can I change the project details later?",
-      answer:
-        "Yes. Update lib/site-config.ts and the environment variables to rename the project, adjust the price, and point to a different public repository or release URL.",
+        "Stripe Checkout completes on this site, then the success page sends you to the latest public Project Dashboard release. If email fulfillment is configured, the release link can be emailed too.",
     },
   ],
 };

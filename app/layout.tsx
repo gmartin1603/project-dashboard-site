@@ -16,10 +16,10 @@ const bodyFont = IBM_Plex_Sans({
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.siteUrl),
-  title: `${siteConfig.projectName} | Open-source release website template`,
+  title: `${siteConfig.projectName} | Local-first desktop launcher`,
   description: siteConfig.description,
   openGraph: {
-    title: `${siteConfig.projectName} | Open-source release website template`,
+    title: `${siteConfig.projectName} | Local-first desktop launcher`,
     description: siteConfig.description,
     url: siteConfig.siteUrl,
     siteName: siteConfig.projectName,
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.projectName} | Open-source release website template`,
+    title: `${siteConfig.projectName} | Local-first desktop launcher`,
     description: siteConfig.description,
   },
 };
