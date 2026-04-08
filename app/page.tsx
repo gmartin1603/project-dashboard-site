@@ -5,7 +5,9 @@ import { isStripeConfigured } from "@/lib/stripe";
 
 export default function Home() {
   const stripeReady = isStripeConfigured();
-  const priceLabel = `Pay ${formatUsd(siteConfig.priceUsd)} and download`;
+  const priceLabel = stripeReady
+    ? `Pay ${formatUsd(siteConfig.priceUsd)} and download`
+    : "Payment setup coming soon";
 
   return (
     <main className="grid-lines min-h-screen">
@@ -136,7 +138,7 @@ export default function Home() {
               </p>
               {!stripeReady ? (
                 <p className="rounded-2xl border border-amber-200/10 bg-amber-200/5 px-4 py-3 text-amber-100">
-                  Set `STRIPE_SECRET_KEY` to enable website payments.
+                  Website payments are not live yet. Use the free GitHub download for now.
                 </p>
               ) : null}
             </div>
