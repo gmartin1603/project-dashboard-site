@@ -2,7 +2,7 @@ const defaultPriceUsd = Number(process.env.NEXT_PUBLIC_DOWNLOAD_PRICE_USD ?? "3"
 
 export const siteConfig = {
   projectName: "Project Dashboard",
-  latestVersion: "v0.4.7",
+  latestVersion: "v0.5.0",
   tagline:
     "A local-first desktop launcher for development folders, VS Code workspaces, and quick git context.",
   description:
@@ -10,7 +10,7 @@ export const siteConfig = {
   repoUrl: "https://github.com/gmartin1603/project-dashboard",
   releasesUrl: "https://github.com/gmartin1603/project-dashboard/releases/latest",
   latestReleaseUrl:
-    "https://github.com/gmartin1603/project-dashboard/releases/tag/v0.4.7",
+    "https://github.com/gmartin1603/project-dashboard/releases/tag/v0.5.0",
   licenseName: "MIT",
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   currency: "usd",
@@ -40,7 +40,7 @@ export const siteConfig = {
     },
   ],
   facts: [
-    { label: "Current release", value: "v0.4.7" },
+    { label: "Current release", value: "v0.5.0" },
     { label: "Support price", value: "$3 USD" },
     { label: "License", value: "MIT" },
     { label: "Distribution", value: "Website checkout, .deb, .rpm, and AppImage" },
@@ -48,18 +48,18 @@ export const siteConfig = {
   releaseAssets: [
     {
       name: "Debian package",
-      fileName: "Project.Dashboard_0.4.7_amd64.deb",
-      url: "https://github.com/gmartin1603/project-dashboard/releases/download/v0.4.7/Project.Dashboard_0.4.7_amd64.deb",
+      fileName: "Project.Dashboard_0.5.0_amd64.deb",
+      url: "https://github.com/gmartin1603/project-dashboard/releases/download/v0.5.0/Project.Dashboard_0.5.0_amd64.deb",
     },
     {
       name: "RPM package",
-      fileName: "Project.Dashboard-0.4.7-1.x86_64.rpm",
-      url: "https://github.com/gmartin1603/project-dashboard/releases/download/v0.4.7/Project.Dashboard-0.4.7-1.x86_64.rpm",
+      fileName: "Project.Dashboard-0.5.0-1.x86_64.rpm",
+      url: "https://github.com/gmartin1603/project-dashboard/releases/download/v0.5.0/Project.Dashboard-0.5.0-1.x86_64.rpm",
     },
     {
       name: "AppImage",
-      fileName: "Project.Dashboard_0.4.7_amd64.AppImage",
-      url: "https://github.com/gmartin1603/project-dashboard/releases/download/v0.4.7/Project.Dashboard_0.4.7_amd64.AppImage",
+      fileName: "Project.Dashboard_0.5.0_amd64.AppImage",
+      url: "https://github.com/gmartin1603/project-dashboard/releases/download/v0.5.0/Project.Dashboard_0.5.0_amd64.AppImage",
     },
   ],
   screenshots: [

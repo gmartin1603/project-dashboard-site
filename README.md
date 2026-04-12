@@ -20,6 +20,8 @@ npm run dev
 
 - `NEXT_PUBLIC_SITE_URL`
 - `NEXT_PUBLIC_DOWNLOAD_PRICE_USD`
+- `SITE_THEME`
+- `SHOW_THEME_SWITCHER`
 - `STRIPE_SECRET_KEY`
 - `STRIPE_WEBHOOK_SECRET`
 - Optional:
@@ -27,6 +29,11 @@ npm run dev
   - `DOWNLOAD_EMAIL_FROM`
 
 Without the Stripe keys, the site still runs and the free GitHub download path remains available.
+
+## Themes
+
+- `SITE_THEME` sets the default landing-page theme. Available values: `classic`, `neon-editorial`, `paper-atelier`, `industrial-terminal`, `cyberpunk`, `minimal-zen`, `comic-book`
+- `SHOW_THEME_SWITCHER` controls whether the in-page theme selector is visible
 
 ## Key files
 

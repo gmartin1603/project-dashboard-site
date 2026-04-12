@@ -1,20 +1,47 @@
 import Image from "next/image";
 import { DownloadButton } from "@/components/download-button";
+import { ThemeSwitcher } from "@/components/theme-switcher";
 import { formatUsd, siteConfig } from "@/lib/site-config";
 import { isStripeConfigured } from "@/lib/stripe";
+import {
+  defaultThemeId,
+  isThemeSwitcherEnabled,
+  resolveThemeId,
+  themesWithGridLines,
+} from "@/lib/themes";
 
-export default function Home() {
+type HomePageProps = {
+  searchParams: Promise<{
+    theme?: string | string[];
+  }>;
+};
+
+function joinClasses(...classNames: Array<string | false | null | undefined>) {
+  return classNames.filter(Boolean).join(" ");
+}
+
+export default async function Home({ searchParams }: HomePageProps) {
+  const { theme } = await searchParams;
   const stripeReady = isStripeConfigured();
+  const themeSwitcherEnabled = isThemeSwitcherEnabled();
+  const selectedTheme = resolveThemeId(theme) ?? defaultThemeId;
+  const themeClassName = `theme-${selectedTheme}`;
   const priceLabel = stripeReady
     ? `Pay ${formatUsd(siteConfig.priceUsd)} and download`
     : "Payment setup coming soon";
+  const usesGridLines = themesWithGridLines.includes(selectedTheme);
+  const isNeon = selectedTheme === "neon-editorial";
+  const isPaper = selectedTheme === "paper-atelier";
+  const isIndustrial = selectedTheme === "industrial-terminal";
 
   return (
-    <main className="grid-lines min-h-screen">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-20 px-6 py-8 sm:px-10 lg:px-14 lg:py-12">
-        <header className="flex flex-col gap-6 border-b border-white/10 pb-8 lg:flex-row lg:items-center lg:justify-between">
+    <>
+      {themeSwitcherEnabled ? <ThemeSwitcher activeTheme={selectedTheme} /> : null}
+      <main className={joinClasses("theme-shell min-h-screen", themeClassName, usesGridLines && "grid-lines")}>
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-20 px-6 py-8 sm:px-10 lg:px-14 lg:py-12">
+          <header className="flex flex-col gap-6 border-b border-[var(--color-divider)] pb-8 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-col gap-3">
-            <p className="text-xs uppercase tracking-[0.32em] text-amber-200/70">
+            <p className={joinClasses("text-xs uppercase tracking-[0.32em] theme-eyebrow", isPaper && "eyebrow-rule", isIndustrial && "status-line") }>
               Open-source release website template
             </p>
             <div>
@@ -27,12 +54,12 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-3 text-sm text-stone-200">
+          <div className="flex flex-wrap gap-3 text-sm">
             <a
               href={siteConfig.repoUrl}
               target="_blank"
               rel="noreferrer"
-              className="rounded-full border border-white/12 px-5 py-3 transition hover:border-amber-200/40 hover:text-amber-100"
+              className="theme-button-secondary rounded-full px-5 py-3 transition"
             >
               Public Repo
             </a>
@@ -40,7 +67,7 @@ export default function Home() {
               href={siteConfig.releasesUrl}
               target="_blank"
               rel="noreferrer"
-              className="rounded-full border border-white/12 px-5 py-3 transition hover:border-amber-200/40 hover:text-amber-100"
+              className="theme-button-secondary rounded-full px-5 py-3 transition"
             >
               GitHub Releases
             </a>
@@ -50,7 +77,7 @@ export default function Home() {
         <section className="grid gap-8 lg:grid-cols-[1.25fr_0.95fr] lg:items-start">
           <div className="flex flex-col gap-8">
             <div className="space-y-6">
-              <p className="max-w-3xl text-sm uppercase tracking-[0.32em] text-amber-200/70">
+              <p className={joinClasses("max-w-3xl text-sm uppercase tracking-[0.32em] theme-eyebrow", isPaper && "eyebrow-rule", isIndustrial && "status-line")}>
                 Open local projects faster. Support the tool if it earns a place in your daily flow.
               </p>
               <h2 className="font-display max-w-4xl text-5xl leading-none tracking-tight text-[var(--color-paper)] sm:text-6xl lg:text-7xl">
@@ -61,10 +88,10 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="panel rounded-[2rem] p-8 sm:p-10">
+            <div className={joinClasses("panel rounded-[2rem] p-8 sm:p-10", isNeon && "glow-outline aurora-card", isPaper && "paper-frame", isIndustrial && "terminal-frame")}>
               <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
                 <div className="space-y-4">
-                  <p className="text-xs uppercase tracking-[0.3em] text-amber-200/70">
+                  <p className={joinClasses("text-xs uppercase tracking-[0.3em] theme-eyebrow", isPaper && "eyebrow-rule")}>
                     Why Project Dashboard works
                   </p>
                   <p className="font-display text-3xl leading-tight text-[var(--color-paper)] sm:text-4xl">
@@ -75,10 +102,10 @@ export default function Home() {
                   </p>
                 </div>
 
-                <div className="grid gap-4 rounded-[1.5rem] border border-amber-200/10 bg-black/20 p-5">
+                <div className="theme-soft-card grid gap-4 rounded-[1.5rem] p-5">
                   {siteConfig.facts.map((fact) => (
-                    <div key={fact.label} className="border-b border-white/8 pb-4 last:border-b-0 last:pb-0">
-                      <p className="text-xs uppercase tracking-[0.26em] text-amber-200/60">
+                    <div key={fact.label} className="border-b border-[var(--color-soft-border)] pb-4 last:border-b-0 last:pb-0">
+                      <p className="theme-eyebrow text-xs uppercase tracking-[0.26em]">
                         {fact.label}
                       </p>
                       <p className="mt-2 text-lg font-medium text-[var(--color-paper)]">
@@ -92,8 +119,8 @@ export default function Home() {
 
             <div className="grid gap-5 md:grid-cols-3">
               {siteConfig.features.map((feature) => (
-                <article key={feature.title} className="panel rounded-[1.75rem] p-6">
-                  <p className="text-xs uppercase tracking-[0.28em] text-amber-200/70">
+                <article key={feature.title} className={joinClasses("panel rounded-[1.75rem] p-6", isNeon && "glow-outline", isPaper && "paper-frame", isIndustrial && "terminal-frame")}>
+                  <p className="theme-eyebrow text-xs uppercase tracking-[0.28em]">
                     Feature
                   </p>
                   <h3 className="mt-4 font-display text-2xl text-[var(--color-paper)]">
@@ -107,26 +134,32 @@ export default function Home() {
             </div>
           </div>
 
-          <aside className="panel sticky top-8 rounded-[2rem] p-8 sm:p-10">
-            <p className="text-xs uppercase tracking-[0.32em] text-amber-200/70">
+          <aside className={joinClasses("panel sticky top-8 rounded-[2rem] p-8 sm:p-10", isNeon && "glow-outline", isPaper && "paper-frame", isIndustrial && "terminal-frame")}>
+            <p className="theme-eyebrow text-xs uppercase tracking-[0.32em]">
               Download options
             </p>
-            <div className="mt-5 border-b border-white/10 pb-7">
+            <div className="mt-5 border-b border-[var(--color-divider)] pb-7">
               <p className="font-display text-4xl text-[var(--color-paper)] sm:text-5xl">
                 {formatUsd(siteConfig.priceUsd)}
               </p>
               <p className="mt-3 text-base leading-7 text-[var(--color-muted)]">
-                Support the project from the website, then jump straight to the newest public release on GitHub.
+                Support the project from the website, then jump straight into a direct Linux asset download. The full public release page stays available on GitHub.
               </p>
             </div>
 
             <div className="mt-7 space-y-4">
-              <DownloadButton label={priceLabel} disabled={!stripeReady} />
+              <DownloadButton
+                label={priceLabel}
+                disabled={!stripeReady}
+                theme={selectedTheme}
+                buttonClassName="theme-button-primary inline-flex min-h-14 items-center justify-center rounded-full px-6 text-sm font-semibold uppercase tracking-[0.24em] transition hover:-translate-y-0.5 disabled:cursor-not-allowed"
+                errorClassName="text-sm text-[var(--color-error)]"
+              />
               <a
                 href={siteConfig.releasesUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex min-h-14 w-full items-center justify-center rounded-full border border-white/12 px-6 text-sm font-semibold uppercase tracking-[0.24em] text-[var(--color-paper)] transition hover:-translate-y-0.5 hover:border-amber-200/40 hover:bg-white/5"
+                className="theme-button-secondary inline-flex min-h-14 w-full items-center justify-center rounded-full px-6 text-sm font-semibold uppercase tracking-[0.24em] transition hover:-translate-y-0.5"
               >
                 Download free on GitHub
               </a>
@@ -134,10 +167,13 @@ export default function Home() {
 
             <div className="mt-6 space-y-3 text-sm leading-7 text-[var(--color-muted)]">
               <p>
-                Paid checkout is handled by Stripe. The app stays open source and links to the public repo directly.
+                Paid checkout is handled by Stripe. Linux buyers can be redirected straight to the download asset, and the app stays open source with the public repo linked directly.
+              </p>
+              <p>
+                Direct website delivery currently targets the Linux AppImage. Other package formats remain available from the public GitHub release.
               </p>
               {!stripeReady ? (
-                <p className="rounded-2xl border border-amber-200/10 bg-amber-200/5 px-4 py-3 text-amber-100">
+                <p className="theme-soft-card rounded-2xl px-4 py-3 theme-eyebrow">
                   Website payments are not live yet. Use the free GitHub download for now.
                 </p>
               ) : null}
@@ -146,14 +182,15 @@ export default function Home() {
         </section>
 
         <section className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
-          <div className="panel rounded-[2rem] p-8 sm:p-10">
-            <p className="text-xs uppercase tracking-[0.32em] text-amber-200/70">
+          <div className={joinClasses("panel rounded-[2rem] p-8 sm:p-10", isNeon && "glow-outline", isPaper && "paper-frame", isIndustrial && "terminal-frame")}>
+            <p className="theme-eyebrow text-xs uppercase tracking-[0.32em]">
               Latest release
             </p>
-            <div className="mt-4 flex flex-col gap-4 border-b border-white/10 pb-8">
+            <div className="mt-4 flex flex-col gap-4 border-b border-[var(--color-divider)] pb-8">
               <h2 className="font-display text-3xl text-[var(--color-paper)] sm:text-4xl">
                 {siteConfig.projectName} {siteConfig.latestVersion}
               </h2>
+              {isIndustrial ? <p className="status-line w-fit">release synced: {siteConfig.latestVersion}</p> : null}
               <p className="max-w-2xl text-base leading-8 text-[var(--color-muted)]">
                 Current packaged downloads are published as Linux release assets. If you want to support the app first, use the checkout. If you just want the files, GitHub Releases stays public.
               </p>
@@ -161,7 +198,7 @@ export default function Home() {
                 href={siteConfig.latestReleaseUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex w-fit items-center justify-center rounded-full border border-white/12 px-5 py-3 text-sm font-semibold uppercase tracking-[0.22em] text-[var(--color-paper)] transition hover:-translate-y-0.5 hover:border-amber-200/40 hover:bg-white/5"
+                className="theme-button-secondary inline-flex w-fit items-center justify-center rounded-full px-5 py-3 text-sm font-semibold uppercase tracking-[0.22em] transition hover:-translate-y-0.5"
               >
                 View release notes
               </a>
@@ -174,9 +211,9 @@ export default function Home() {
                   href={asset.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-[1.5rem] border border-white/8 bg-black/15 p-5 transition hover:border-amber-200/30 hover:bg-black/25"
+                  className="theme-soft-card rounded-[1.5rem] p-5 transition hover:border-[var(--color-accent-strong)]"
                 >
-                  <p className="text-xs uppercase tracking-[0.26em] text-amber-200/60">
+                  <p className="theme-eyebrow text-xs uppercase tracking-[0.26em]">
                     {asset.name}
                   </p>
                   <p className="mt-3 break-all text-sm leading-7 text-[var(--color-paper)]">
@@ -189,7 +226,7 @@ export default function Home() {
 
           <div className="grid gap-6">
             {siteConfig.screenshots.map((screenshot) => (
-              <article key={screenshot.title} className="panel overflow-hidden rounded-[2rem]">
+              <article key={screenshot.title} className={joinClasses("panel overflow-hidden rounded-[2rem]", isNeon && "glow-outline", isPaper && "paper-frame", isIndustrial && "terminal-frame")}>
                 <Image
                   src={screenshot.imageUrl}
                   alt={screenshot.title}
@@ -198,7 +235,7 @@ export default function Home() {
                   className="block aspect-[16/10] w-full object-cover object-top"
                 />
                 <div className="p-6 sm:p-8">
-                  <p className="text-xs uppercase tracking-[0.3em] text-amber-200/70">
+                  <p className="theme-eyebrow text-xs uppercase tracking-[0.3em]">
                     Screenshot
                   </p>
                   <h3 className="mt-3 font-display text-2xl text-[var(--color-paper)]">
@@ -214,8 +251,8 @@ export default function Home() {
         </section>
 
         <section className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="panel rounded-[2rem] p-8 sm:p-10">
-            <p className="text-xs uppercase tracking-[0.32em] text-amber-200/70">
+          <div className={joinClasses("panel rounded-[2rem] p-8 sm:p-10", isNeon && "glow-outline", isPaper && "paper-frame", isIndustrial && "terminal-frame")}>
+            <p className="theme-eyebrow text-xs uppercase tracking-[0.32em]">
               Open source first
             </p>
             <h2 className="mt-4 font-display text-3xl text-[var(--color-paper)] sm:text-4xl">
@@ -225,16 +262,16 @@ export default function Home() {
               Project Dashboard is MIT licensed, published in the open, and built for developers who want less friction getting back into active workspaces. The website simply gives supporters a cleaner path to contribute.
             </p>
             <dl className="mt-8 grid gap-4 text-sm text-[var(--color-muted)]">
-              <div className="rounded-[1.4rem] border border-white/8 bg-black/15 p-5">
-                <dt className="text-xs uppercase tracking-[0.26em] text-amber-200/60">
+              <div className="theme-soft-card rounded-[1.4rem] p-5">
+                <dt className="theme-eyebrow text-xs uppercase tracking-[0.26em]">
                   Public repo
                 </dt>
                 <dd className="mt-2 break-all text-[var(--color-paper)]">
                   {siteConfig.repoUrl}
                 </dd>
               </div>
-              <div className="rounded-[1.4rem] border border-white/8 bg-black/15 p-5">
-                <dt className="text-xs uppercase tracking-[0.26em] text-amber-200/60">
+              <div className="theme-soft-card rounded-[1.4rem] p-5">
+                <dt className="theme-eyebrow text-xs uppercase tracking-[0.26em]">
                   License
                 </dt>
                 <dd className="mt-2 text-[var(--color-paper)]">{siteConfig.licenseName}</dd>
@@ -242,9 +279,9 @@ export default function Home() {
             </dl>
           </div>
 
-          <div className="panel rounded-[2rem] p-8 sm:p-10">
-            <p className="text-xs uppercase tracking-[0.32em] text-amber-200/70">FAQ</p>
-            <div className="mt-6 divide-y divide-white/8">
+          <div className={joinClasses("panel rounded-[2rem] p-8 sm:p-10", isNeon && "glow-outline", isPaper && "paper-frame", isIndustrial && "terminal-frame")}>
+            <p className="theme-eyebrow text-xs uppercase tracking-[0.32em]">FAQ</p>
+            <div className="mt-6 divide-y divide-[var(--color-soft-border)]">
               {siteConfig.faq.map((item) => (
                 <article key={item.question} className="py-5 first:pt-0 last:pb-0">
                   <h3 className="font-display text-2xl text-[var(--color-paper)]">
@@ -258,7 +295,8 @@ export default function Home() {
             </div>
           </div>
         </section>
-      </div>
-    </main>
+        </div>
+      </main>
+    </>
   );
 }

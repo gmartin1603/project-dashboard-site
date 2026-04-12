@@ -1,8 +1,17 @@
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+import {
+  detectPlatform,
+  getDownloadRouteUrl,
+  getDownloadUrl,
+  getPlatformLabel,
+  isPaidDownloadSupported,
+} from "@/lib/download";
 import { formatUsd, siteConfig } from "@/lib/site-config";
 import { getStripeServerClient, isStripeConfigured } from "@/lib/stripe";
+import { resolveThemeId } from "@/lib/themes";
 
-export async function POST() {
+export async function POST(request: Request) {
   if (!isStripeConfigured()) {
     return NextResponse.json(
       { error: "Stripe is not configured. Set STRIPE_SECRET_KEY first." },
@@ -11,13 +20,37 @@ export async function POST() {
   }
 
   try {
+    const payload = (await request.json().catch(() => ({}))) as { theme?: string | null };
+    const selectedTheme = resolveThemeId(payload.theme);
+    const requestHeaders = await headers();
+    const platform = detectPlatform(requestHeaders.get("user-agent"));
+    const successUrl = new URL(`${siteConfig.siteUrl}/success`);
+    const cancelUrl = new URL(`${siteConfig.siteUrl}/cancel`);
+
+    successUrl.searchParams.set("session_id", "{CHECKOUT_SESSION_ID}");
+
+    if (selectedTheme) {
+      successUrl.searchParams.set("theme", selectedTheme);
+      cancelUrl.searchParams.set("theme", selectedTheme);
+    }
+
+    if (!isPaidDownloadSupported(platform)) {
+      return NextResponse.json(
+        {
+          error: `Direct paid download is not available for ${getPlatformLabel(platform)} yet. Use the free GitHub release instead.`,
+        },
+        { status: 400 },
+      );
+    }
+
+    const downloadUrl = getDownloadUrl(platform);
     const stripe = getStripeServerClient();
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       billing_address_collection: "auto",
       customer_creation: "always",
-      success_url: `${siteConfig.siteUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${siteConfig.siteUrl}/cancel`,
+      success_url: successUrl.toString(),
+      cancel_url: cancelUrl.toString(),
       line_items: [
         {
           quantity: 1,
@@ -32,10 +65,14 @@ export async function POST() {
         },
       ],
       metadata: {
-        download_url: siteConfig.releasesUrl,
+        download_url: getDownloadRouteUrl(),
+        resolved_download_url: downloadUrl,
+        release_url: siteConfig.releasesUrl,
         repo_url: siteConfig.repoUrl,
         project_name: siteConfig.projectName,
         purchase_amount: formatUsd(siteConfig.priceUsd),
+        platform,
+        theme_id: selectedTheme ?? "classic",
       },
     });
 
